@@ -3,19 +3,16 @@ version: 0.2
 phases:
   build:
     commands:
-      - git log --decorate > log.txt
-      - head -n 50 log.txt
-      - echo CodeBuild source version is ${CODEBUILD_SOURCE_VERSION}
-      - git describe --tags
       - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
       - apt update && apt install -y curl kubectl python3-pip
       - pip3 install awscli
-      - aws eks update-kubeconfig --name ${CLUSTER_NAME}
       - curl -O https://storage.googleapis.com/kubernetes-helm/helm-v2.11.0-linux-amd64.tar.gz
       - tar zxvf helm-v2.11.0-linux-amd64.tar.gz
       - cp linux-amd64/helm /usr/local/bin/
-      - COMMIT_SHA=$(git rev-parse --short HEAD)
+      - aws eks update-kubeconfig --name ${CLUSTER_NAME}
   post_build:
     commands:
-      - helm template k8s/ -f k8s/values.yaml -f k8s/values/dev.yaml | kubectl --token ${DEPLOY} apply -f -
+      - curl -O https://s3-us-west-2.amazonaws.com/iam-codebuild-assets/dino-park-front-end-deploy.sh
+      - chmod +x dino-park-front-end-deploy.sh
+      - ./dino-park-front-end-deploy.sh
