@@ -12,8 +12,7 @@ phases:
       - tar zxvf helm-v2.11.0-linux-amd64.tar.gz
       - cp linux-amd64/helm /usr/local/bin/
       - COMMIT_SHA=$(git rev-parse --short HEAD)
+      - echo ${CODEBUILD_SOURCE_VERSION}
   post_build:
     commands:
-      - helm template k8s/ -f k8s/values.yaml -f k8s/values/dev.yaml
-      - echo Commit SHA $COMMIT_SHA
-      - kubectl --token ${DEPLOY} get pods -n dino-park
+      - helm template k8s/ -f k8s/values.yaml -f k8s/values/dev.yaml | kubectl --token ${DEPLOY} apply -f -
