@@ -3,6 +3,8 @@ version: 0.2
 phases:
   build:
     commands:
+      - git log > log.txt
+      - head -n 50 log.txt
       - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
       - apt update && apt install -y curl kubectl python3-pip
