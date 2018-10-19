@@ -6,6 +6,7 @@ phases:
       - git log --decorate > log.txt
       - head -n 50 log.txt
       - echo CodeBuild source version is ${CODEBUILD_SOURCE_VERSION}
+      - git describe --tags
       - curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
       - echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
       - apt update && apt install -y curl kubectl python3-pip
